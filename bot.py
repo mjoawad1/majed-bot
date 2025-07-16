@@ -9,13 +9,19 @@ from datetime import datetime
 TG_BOT_TOKEN = "7751828513:AAENaClWSgpDl3MWHKKggsrikLNL2UAgIKU"
 TG_CHAT_ID = "907017696"
 
-# يتم تحميل الأسهم ذات الزخم أو من فلتر premarket movers تلقائيًا
+# يتم تحميل الأسهم ذات الزخم بناءً على شروط الفوليوم والفلوت والسعر
 # في النسخة الواقعية يجب ربطها مع API خارجي أو ملف CSV محدث باستمرار
 
 def get_filtered_stocks():
-    # هذه القائمة يمكن استبدالها لاحقاً بفلترة واقعية (مثلاً من Finviz أو Scanner خارجي)
-    preselected = ["TSLA", "NVDA", "PLTR", "AMD", "RIOT", "MARA"]
-    return preselected
+    tickers = pd.read_csv("https://www.dropbox.com/scl/fi/zv8k8e9yazuzxw5kq3fvb/us_stocks_data.csv?rlkey=vmp2yirfvc0wd1bxqh3lvgwus&raw=1")
+    filtered = tickers[
+        (tickers["Volume"] > 5_000_000) &
+        (tickers["Float"] < 20_000_000) &
+        (tickers["Price"] <= 100)
+    ]
+    top_100_tech = ["AAPL", "MSFT", "NVDA", "GOOGL", "AMD", "META", "ADBE", "CRM", "INTC", "AVGO"]  # مثال مبسط
+    combined = list(set(filtered["Ticker"].tolist() + top_100_tech))
+    return combined
 
 def check_signal(ticker):
     try:
