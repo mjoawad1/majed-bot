@@ -1,0 +1,8 @@
+services:
+  - type: worker
+    name: majed-call-bot
+    runtime: python
+    plan: starter
+    buildCommand: ""
+    startCommand: "python bot.py"
+    autoDeploy: false
